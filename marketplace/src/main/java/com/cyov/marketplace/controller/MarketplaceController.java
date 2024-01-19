@@ -20,7 +20,9 @@ public class MarketplaceController {
 
     @GetMapping
     public List<SampleEntity> getAllBooks() {
-        return bookService.findAllBooks();
+        List<SampleEntity> result = bookService.findAllBooks();
+        System.out.println("result: " + result.get(0));
+        return result;
     }
 
 }
