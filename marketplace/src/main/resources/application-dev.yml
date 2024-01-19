@@ -1,0 +1,14 @@
+server:
+  port: 8090
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${PSQL_DATABASE}
+    username: ${PSQL_USER_NAME}
+    password: ${PSQL_PASSWORD}
+  data:
+    redis:
+      port: 6379
+      password: ${REDIS_PASSWORD}
+      host: ${REDIS_HOST}  # or host: ${REDIS_HOST}:127.0.0.1
+
