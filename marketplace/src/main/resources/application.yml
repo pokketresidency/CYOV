@@ -1,0 +1,14 @@
+server:
+  port: 8090
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/marketplace
+    username: nanhe
+    password: nanhe
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  redis:
+    port: 6379
+    password: nanhe
+    host: 127.0.0.1
