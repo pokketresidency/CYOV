@@ -1,0 +1,15 @@
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRATP_SERVERS}
+
+    dlq-topic:  ${KAFKA_DLQ_TOPIC}
+    communication-topic:  ${KAFKA_COMMUNICATION_TOPIC}
+    communication-group-id:  ${KAFKA_COMMUNICATION_GROUP_ID}
+    communication-partitioned-topic:  ${KAFKA_COMMUNICATION_PARTITIONED_TOPIC}
+    communication-partitioned-group-id:  ${KAFKA_COMMUNICATION_PARTITIONED_GROUP_ID}
+    communication-dlq-group-id:  ${KAFKA_COMMUNICATION_DLQ_GROUP_ID}
+    no-of-partitions: 10
+    retry:
+      backoff:
+        interval: 500
+        max-attempts: 3
