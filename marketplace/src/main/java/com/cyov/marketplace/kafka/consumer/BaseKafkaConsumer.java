@@ -47,11 +47,10 @@ public class BaseKafkaConsumer {
 
 
     @KafkaHandler
-    public void communicationListener(String event) throws JsonProcessingException {
+    public void communicationListener(CommunicationDTO event) throws JsonProcessingException {
         try {
             log.info("Event Received from clevertap topic, publishing the event to partitioned topic  - {}", event);
-//            kafkaTemplate.send(COMMUNICATION_PARTITIONED_TOPIC, event.getIdentity(), objectMapper.writeValueAsString(event));
-            kafkaTemplate.send(COMMUNICATION_PARTITIONED_TOPIC, "id1", objectMapper.writeValueAsString(event));
+            kafkaTemplate.send(COMMUNICATION_PARTITIONED_TOPIC, event.getIdentity(), objectMapper.writeValueAsString(event));
         }  catch(Exception ex) {
             dlqPublisherUtil.publishEventToDlq(null, String.valueOf(event),
                     "Error while sending to partitioned topic + ");
