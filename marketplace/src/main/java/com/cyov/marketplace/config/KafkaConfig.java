@@ -40,7 +40,7 @@ public class KafkaConfig {
     private String PARTITIONED_TOPIC;
 
 
-    @Value("${spring.kafka.communication-group-id}")
+    @Value("${spring.kafka.communication-partitioned-group-id}")
     private String KAFKA_GROUP_ID;
 
 

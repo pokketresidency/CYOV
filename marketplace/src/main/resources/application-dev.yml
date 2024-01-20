@@ -18,8 +18,7 @@ spring:
     password: ${REDIS_PASSWORD}
   kafka:
     bootstrap-servers: localhost:9092
-    consumer:
-      group-id: mygroup
+
     dlq-topic: sample-dlq-topic
     communication-topic: communication-topic
     communication-group-id: communication-group-id
