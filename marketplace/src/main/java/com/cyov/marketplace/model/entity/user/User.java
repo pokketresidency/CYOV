@@ -1,5 +1,7 @@
-package com.cyov.marketplace.model.entity;
+package com.cyov.marketplace.model.entity.user;
 
+import com.cyov.marketplace.model.entity.user.Address;
+import com.cyov.marketplace.model.entity.user.PhoneNumber;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
