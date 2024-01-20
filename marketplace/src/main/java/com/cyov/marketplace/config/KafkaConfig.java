@@ -1,6 +1,7 @@
 package com.cyov.marketplace.config;
 
 
+import com.cyov.marketplace.model.dto.CommunicationDTODeserializer;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -54,7 +55,7 @@ public class KafkaConfig {
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, KAFKA_GROUP_ID);
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, CommunicationDTODeserializer.class);
         return new DefaultKafkaConsumerFactory<>(configProps);
     }
 
