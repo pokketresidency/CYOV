@@ -1,4 +1,4 @@
-package com.cyov.marketplace.model.entity;
+package com.cyov.marketplace.model.entity.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,26 +9,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "address")
-public class Address {
+@Table(name = "phone_number")
+public class PhoneNumber {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long addressId;
+    private Long phoneNumberId;
 
     @Column(nullable = false)
-    private String address;
+    private String phoneNumber;
 
-    @Column(nullable = false)
-    private String city;
-
-    @Column(nullable = false)
-    private String state;
-
-    @Column(nullable = false)
-    private String country;
-
-    @Column(nullable = false)
-    private String postalCode;
+    private String type;
 
     private Boolean isPrimary;
 
