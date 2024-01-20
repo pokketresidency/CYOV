@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 @KafkaListener(topics = "${spring.kafka.communication-topic}", groupId = "${spring.kafka.communication-group-id}")
 @Component
-public abstract class BaseKafkaConsumer {
+public class BaseKafkaConsumer {
 
     private final Logger logger = LoggerFactory.getLogger(BaseKafkaConsumer.class);
 
@@ -44,14 +44,14 @@ public abstract class BaseKafkaConsumer {
 
 
     // The method to be implemented by the subclasses
-    protected abstract void processMessage(String key, String value);
 
 
     @KafkaHandler
-    public void communicationListener(CommunicationDTO event) throws JsonProcessingException {
+    public void communicationListener(String event) throws JsonProcessingException {
         try {
             log.info("Event Received from clevertap topic, publishing the event to partitioned topic  - {}", event);
-            kafkaTemplate.send(COMMUNICATION_PARTITIONED_TOPIC, event.getIdentity(), objectMapper.writeValueAsString(event));
+//            kafkaTemplate.send(COMMUNICATION_PARTITIONED_TOPIC, event.getIdentity(), objectMapper.writeValueAsString(event));
+            kafkaTemplate.send(COMMUNICATION_PARTITIONED_TOPIC, "id1", objectMapper.writeValueAsString(event));
         }  catch(Exception ex) {
             dlqPublisherUtil.publishEventToDlq(null, String.valueOf(event),
                     "Error while sending to partitioned topic + ");
@@ -59,18 +59,18 @@ public abstract class BaseKafkaConsumer {
         }
     }
 
-//    @KafkaHandler
-//    public void hanldeDeserializedFailureEvents(byte[] event) {
-//        try {
-//            log.info("hanldeDeserializedFailureEvents --- Messaged received - {}", event);
-//            dlqPublisherUtil.publishEventToDlq(null, new String(event, StandardCharsets.UTF_8),
-//                    "Error while deserializing the consumed event body byte data before consuming.");
-//
-//        }  catch(Exception ex) {
-//            log.error("Error occurred while pushing to DLQ:  Event :  {} , Exception : ", event, ex);
-//
-//        }
-//    }
+    @KafkaHandler
+    public void hanldeDeserializedFailureEvents(byte[] event) {
+        try {
+            log.info("hanldeDeserializedFailureEvents --- Messaged received - {}", event);
+            dlqPublisherUtil.publishEventToDlq(null, new String(event, StandardCharsets.UTF_8),
+                    "Error while deserializing the consumed event body byte data before consuming.");
+
+        }  catch(Exception ex) {
+            log.error("Error occurred while pushing to DLQ:  Event :  {} , Exception : ", event, ex);
+
+        }
+    }
 
 }
 
