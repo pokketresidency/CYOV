@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
 
@@ -20,7 +19,7 @@ import org.springframework.web.client.HttpServerErrorException;
 @KafkaListener(topics = "${spring.kafka.communication-partitioned-topic}", groupId = "${spring.kafka.communication-partitioned-group-id}", concurrency = "15")
 public class PartitionedTopicConsumer {
 
-    private final Logger logger = LoggerFactory.getLogger(KafkaConsumerService.class);
+    private final Logger logger = LoggerFactory.getLogger(PartitionedTopicConsumer.class);
 
 
     @Autowired
@@ -32,7 +31,7 @@ public class PartitionedTopicConsumer {
 
 
     @KafkaHandler
-    public void handleEvent(CommunicationDTO event) throws JsonProcessingException {
+    public void handleEvent(String event) throws JsonProcessingException {
         try {
 
             log.info("Message received - {}", event);
