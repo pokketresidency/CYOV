@@ -1,7 +1,9 @@
-server:
-  port: 8090
 
 spring:
+  config:
+    import:
+      - classpath:dev/kafka.yml
+      - classpath:dev/health-check.yml
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,19 +18,5 @@ spring:
     host: ${REDIS_HOST}
     port: 6379
     password: ${REDIS_PASSWORD}
-  kafka:
-    bootstrap-servers: localhost:9092
-
-    dlq-topic: sample-dlq-topic
-    communication-topic: communication-topic
-    communication-group-id: communication-group-id
-    communication-partitioned-topic: communication-partitioned-topic
-    communication-partitioned-group-id: communication-partitioned-group-id
-    communication-dlq-group-id: communication-dlq-group-id
-    no-of-partitions: 10
-    retry:
-      backoff:
-        interval: 500
-        max-attempts: 3
 
 
