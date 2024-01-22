@@ -1,4 +1,4 @@
-package com.cyov.marketplace.model.dto;
+package com.cyov.marketplace.model.dto.communication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

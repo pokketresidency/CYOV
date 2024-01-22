@@ -1,6 +1,6 @@
 package com.cyov.marketplace.kafka.consumer;
 
-import com.cyov.marketplace.model.dto.CommunicationDTO;
+import com.cyov.marketplace.model.dto.communication.CommunicationDTO;
 import com.cyov.marketplace.utils.PublishToDLQ;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -4,6 +4,18 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "product_customization_options")
 public class ProductCustomizationOption {

@@ -2,6 +2,15 @@ package com.cyov.marketplace.model.entity.product;
 
 import jakarta.persistence.*;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "product_variants")
 public class ProductVariant {
