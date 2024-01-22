@@ -1,6 +1,7 @@
 package com.cyov.marketplace.service.impl.cart;
 
 import com.cyov.marketplace.model.dto.cart.CartItemDTO;
+import com.cyov.marketplace.model.dto.cart.FetchFromCartObject;
 import com.cyov.marketplace.model.entity.orderflow.CartItem;
 import com.cyov.marketplace.model.entity.product.Product;
 import com.cyov.marketplace.model.entity.user.User;
@@ -27,7 +28,7 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<CartItem> addItemsToCart(Long userId, List<CartItemDTO> itemDTOs) {
+    public FetchFromCartObject addItemsToCart(Long userId, List<CartItemDTO> itemDTOs) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
         // Fetch existing cart items for the user
