@@ -9,20 +9,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "product_variants")
-public class ProductVariant {
-
+@Table(name="product_options")
+public class ProductOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long variantId;
+    private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", referencedColumnName = "productId")
-    private Product product;
+    @Column(name="option_type")
+    private String optionType;
 
-    private String size;
-
-    private String color;
+    @Column(name="option_value") // Corrected the column name here
+    private String optionValue;
 
     // Getters and setters
 }

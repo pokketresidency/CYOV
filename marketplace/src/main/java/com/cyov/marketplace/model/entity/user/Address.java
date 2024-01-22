@@ -16,7 +16,7 @@ public class Address {
     private Long addressId;
 
     @Column(nullable = false)
-    private String address;
+    private String streetAddress;  // Renamed for clarity
 
     @Column(nullable = false)
     private String city;
@@ -32,7 +32,7 @@ public class Address {
 
     private Boolean isPrimary;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
