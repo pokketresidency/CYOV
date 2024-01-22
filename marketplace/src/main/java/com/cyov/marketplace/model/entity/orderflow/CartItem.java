@@ -37,6 +37,6 @@ public class CartItem {
     private LocalDateTime addedAt;
 
      @ManyToOne
-     @JoinColumn(name = "user_id", referencedColumnName = "userId")
+     @JoinColumn(name = "user_id")
      private User user;
 }

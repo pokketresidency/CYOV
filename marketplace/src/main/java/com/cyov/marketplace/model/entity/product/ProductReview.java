@@ -23,7 +23,7 @@ public class ProductReview {
 
 //     Uncomment and modify this section if you have a User entity
      @ManyToOne(fetch = FetchType.LAZY)
-     @JoinColumn(name = "user_id", referencedColumnName = "userId")
+     @JoinColumn(name = "user_id")
      private User user;
 
     private Integer rating;
