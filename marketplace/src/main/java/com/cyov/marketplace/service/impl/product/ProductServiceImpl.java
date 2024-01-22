@@ -69,22 +69,4 @@ public class ProductServiceImpl implements IProductService {
         productOptionDTO.setOptionValue(productOption.getOptionValue());
         return productOptionDTO;
     }
-
-//    @Override
-//    public ApiResponse<ProductResponseDTO> getByProductId(Long productId) {
-//        Optional<Product> productOpt = productRepository.findById(productId);
-//        if (productOpt.isPresent()) {
-//            Product product = productOpt.get();
-//            ProductResponseDTO responseDTO = new ProductResponseDTO(
-//                    product.getName(),
-//                    product.getDescription());
-//            return new ApiResponse<>(responseDTO, "Success", null, "Product found");
-//        } else {
-//            return new ApiResponse<>(null, "Error", "PRODUCT_NOT_FOUND", "Product not found");
-//        }
-//    }
-
-
-
-
 }
