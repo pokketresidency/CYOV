@@ -1,8 +1,10 @@
-server:
-  port: 8090
 
 
 spring:
+  config:
+    import:
+      - classpath:dev/kafka.yml
+      - classpath:dev/health-check.yml
   jpa:
     hibernate:
       ddl-auto: update

@@ -31,7 +31,7 @@ public class PartitionedTopicConsumer {
 
 
     @KafkaHandler
-    public void handleEvent(String event) throws JsonProcessingException {
+    public void handleEvent(CommunicationDTO event) throws JsonProcessingException {
         try {
 
             log.info("Message received - {}", event);

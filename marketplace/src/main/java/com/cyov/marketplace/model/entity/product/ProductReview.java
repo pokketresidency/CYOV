@@ -31,6 +31,4 @@ public class ProductReview {
     @Column(columnDefinition = "TEXT")
     private String comment;
 
-
-    // Getters and setters
 }
