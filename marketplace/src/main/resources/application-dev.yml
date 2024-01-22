@@ -1,12 +1,14 @@
 server:
   port: 8090
 
+
 spring:
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
+        show_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect # Example for PostgreSQL
   datasource:
     url: jdbc:postgresql://localhost:5432/marketplace
@@ -18,7 +20,6 @@ spring:
     password: ${REDIS_PASSWORD}
   kafka:
     bootstrap-servers: localhost:9092
-
     dlq-topic: sample-dlq-topic
     communication-topic: communication-topic
     communication-group-id: communication-group-id

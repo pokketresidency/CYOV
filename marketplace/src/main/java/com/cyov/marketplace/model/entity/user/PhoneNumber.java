@@ -18,11 +18,11 @@ public class PhoneNumber {
     @Column(nullable = false)
     private String phoneNumber;
 
-    private String type;
+    private String type;  // Consider using an enumeration for predefined types
 
     private Boolean isPrimary;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

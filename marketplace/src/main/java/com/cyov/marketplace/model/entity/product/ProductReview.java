@@ -1,7 +1,14 @@
 package com.cyov.marketplace.model.entity.product;
 
+import com.cyov.marketplace.model.entity.user.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "product_reviews")
 public class ProductReview {
@@ -10,16 +17,20 @@ public class ProductReview {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
 
-    @Column(name = "product_id")
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", referencedColumnName = "productId")
+    private Product product;
 
-    @Column(name = "user_id")
-    private Long userId;
+//     Uncomment and modify this section if you have a User entity
+     @ManyToOne(fetch = FetchType.LAZY)
+     @JoinColumn(name = "user_id", referencedColumnName = "userId")
+     private User user;
 
     private Integer rating;
 
     @Column(columnDefinition = "TEXT")
     private String comment;
+
 
     // Getters and setters
 }
