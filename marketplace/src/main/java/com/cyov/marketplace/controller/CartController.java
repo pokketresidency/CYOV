@@ -1,8 +1,10 @@
 package com.cyov.marketplace.controller;
 
+import com.cyov.marketplace.model.dto.cart.AddToCartObject;
 import com.cyov.marketplace.model.dto.cart.CartRequestDTO;
 import com.cyov.marketplace.model.dto.cart.CartResponseDTO;
 import com.cyov.marketplace.model.ServiceResponse;
+import com.cyov.marketplace.model.dto.cart.FetchFromCartObject;
 import com.cyov.marketplace.service.cart.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,8 +26,8 @@ public class CartController {
     @PostMapping("/add")
     public ResponseEntity<ServiceResponse<CartResponseDTO>> addItemToCart(@RequestBody CartRequestDTO itemDTO) {
         try {
-            List addedItem = cartService.addItemsToCart(itemDTO.getUserId(), itemDTO.getCartItemDTOList());
-            return ResponseEntity.ok(new ServiceResponse<>(SUCCESS, "Added to cart", new CartResponseDTO()));
+            FetchFromCartObject addedItem = cartService.addItemsToCart(itemDTO);
+            return ResponseEntity.ok(new ServiceResponse<>(SUCCESS, "Added to cart", new CartResponseDTO(addedItem.getCartItems())));
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -2,59 +2,49 @@ package com.cyov.marketplace.service.impl.cart;
 
 import com.cyov.marketplace.model.dto.cart.AddToCartObject;
 import com.cyov.marketplace.model.dto.cart.FetchFromCartObject;
+import com.cyov.marketplace.model.entity.orderflow.CartItem;
+import com.cyov.marketplace.model.entity.user.User;
+import com.cyov.marketplace.repository.cart.CartItemRepository;
 import com.cyov.marketplace.service.cart.RedisCartService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cyov.marketplace.model.entity.orderflow.CartItem;
 import com.cyov.marketplace.utils.RedisUtility;
 
 import java.util.List;
+
+import static com.cyov.marketplace.constants.AppConstants.REDIS_CART_KEY_PREFIX;
 
 @Service
 public class RedisCartServiceImpl implements RedisCartService {
 
     @Autowired
-    private CartServiceImpl cartServiceImpl;
-
-    @Autowired
     private RedisUtility redisUtility;
 
-    private static final String CART_KEY_PREFIX = "cart:";
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
 
     @Override
-    public FetchFromCartObject addItemsToCart(AddToCartObject addToCartObject) {
-        // Try to fetch the cart from Redis
-        FetchFromCartObject cartItems = fetchCartFromRedis(addToCartObject.getUserId());
-        if (cartItems == null) {
-            // If not in Redis, fetch from DB and update Redis
-            cartItems = cartServiceImpl.addItemsToCart(addToCartObject.getUserId(), addToCartObject.getItemDTOs());
-            updateCartInRedis(addToCartObject.getUserId(), cartItems);
+    public boolean addItemsToRedisCart(AddToCartObject addToCartObject) throws JsonProcessingException {
+
+        String key = REDIS_CART_KEY_PREFIX + addToCartObject.getUserId();
+
+        redisUtility.setValue(key, addToCartObject);
+        return true;
+    }
+
+    @Override
+    public FetchFromCartObject fetchCartFromRedis(Long userId) throws JsonProcessingException {
+        String key = REDIS_CART_KEY_PREFIX + userId;
+        FetchFromCartObject redisUtilityValue = redisUtility.getValue(key, FetchFromCartObject.class);
+        if(redisUtilityValue == null) {
+            List<CartItem> existingCartItems = cartItemRepository.findByUser(new User(userId));
+            redisUtilityValue = new FetchFromCartObject(existingCartItems);
+            addItemsToRedisCart(new AddToCartObject(userId, redisUtilityValue.getCartItems()));
         }
-        return new FetchFromCartObject(cartItems);
-    }
 
-    @Override
-    public FetchFromCartObject fetchCartFromRedis(Long userId) {
-        String key = CART_KEY_PREFIX + userId;
-        String cartJson = redisUtility.getValue(key);
-        if (cartJson != null) {
-            // Deserialize the JSON back to List<CartItem>
-            // You need to write the logic for this based on your CartItem structure
-            return deserializeCartItems(cartJson);
-        }
-        return null;
+        return redisUtilityValue;
     }
-
-    @Override
-    public void updateCartInRedis(Long userId, List<CartItem> cartItems) {
-        String key = CART_KEY_PREFIX + userId;
-        // Serialize your List<CartItem> to JSON
-        // You need to write the logic for this based on your CartItem structure
-        String cartJson = serializeCartItems(cartItems);
-        redisUtility.setValue(key, cartJson);
-    }
-
-    // Add methods for serializeCartItems and deserializeCartItems
-    // These methods will handle the conversion between List<CartItem> and JSON string
 }

@@ -1,6 +1,8 @@
 package com.cyov.marketplace.service.impl.cart;
 
+import com.cyov.marketplace.model.dto.cart.AddToCartObject;
 import com.cyov.marketplace.model.dto.cart.CartItemDTO;
+import com.cyov.marketplace.model.dto.cart.CartRequestDTO;
 import com.cyov.marketplace.model.dto.cart.FetchFromCartObject;
 import com.cyov.marketplace.model.entity.orderflow.CartItem;
 import com.cyov.marketplace.model.entity.product.Product;
@@ -9,6 +11,8 @@ import com.cyov.marketplace.repository.cart.CartItemRepository;
 import com.cyov.marketplace.repository.product.ProductRepository;
 import com.cyov.marketplace.repository.user.UserRepository;
 import com.cyov.marketplace.service.cart.CartService;
+import com.cyov.marketplace.service.cart.RedisCartService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,16 +30,20 @@ public class CartServiceImpl implements CartService {
     private ProductRepository productRepository;
 
     @Autowired
+    private RedisCartService redisCartService;
+
+    @Autowired
     private UserRepository userRepository;
 
-    public FetchFromCartObject addItemsToCart(Long userId, List<CartItemDTO> itemDTOs) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    @Override
+    public FetchFromCartObject addItemsToCart(CartRequestDTO addToCartObject) throws JsonProcessingException {
+        User user = userRepository.findById(addToCartObject.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Fetch existing cart items for the user
-        List<CartItem> existingCartItems = cartItemRepository.findByUser(user);
+        FetchFromCartObject cartPresentInRedis = redisCartService.fetchCartFromRedis(addToCartObject.getUserId());
+        List<CartItem> existingCartItems = cartPresentInRedis.getCartItems();
 
         // Process new items
-        for (CartItemDTO itemDTO : itemDTOs) {
+        for (CartItemDTO itemDTO : addToCartObject.getCartItemDTOList()) {
             Product product = productRepository.findById(itemDTO.getProductId()).orElseThrow(() -> new RuntimeException("Product not found"));
             Optional<CartItem> existingItem = existingCartItems.stream()
                     .filter(cartItem -> cartItem.getProduct().getProductId().equals(product.getProductId()))
@@ -56,8 +64,15 @@ public class CartServiceImpl implements CartService {
                 existingCartItems.add(newItem);
             }
         }
+        redisCartService.addItemsToRedisCart(new AddToCartObject(addToCartObject.getUserId(), existingCartItems));
+        List<CartItem> updatedCartItems = cartItemRepository.saveAll(existingCartItems);
 
-        return cartItemRepository.saveAll(existingCartItems);
+        return new FetchFromCartObject(updatedCartItems);
+    }
+
+    @Override
+    public FetchFromCartObject fetchFromCartObject(AddToCartObject addToCartObject) throws JsonProcessingException {
+        return redisCartService.fetchCartFromRedis(addToCartObject.getUserId());
     }
 
 }

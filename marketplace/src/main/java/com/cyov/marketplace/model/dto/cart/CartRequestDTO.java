@@ -1,5 +1,6 @@
 package com.cyov.marketplace.model.dto.cart;
 
+import com.cyov.marketplace.model.entity.orderflow.CartItem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
