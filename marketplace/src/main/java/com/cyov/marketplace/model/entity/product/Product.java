@@ -45,5 +45,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ProductReview> reviews; // Add this field for reviews
 
-    // Getters and setters
+    public Product(Long productId) {
+        this.productId = productId;
+    }
 }

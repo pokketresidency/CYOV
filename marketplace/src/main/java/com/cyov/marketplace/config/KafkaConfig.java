@@ -1,7 +1,7 @@
 package com.cyov.marketplace.config;
 
 
-import com.cyov.marketplace.model.dto.CommunicationDTODeserializer;
+import com.cyov.marketplace.model.dto.communication.CommunicationDTODeserializer;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;

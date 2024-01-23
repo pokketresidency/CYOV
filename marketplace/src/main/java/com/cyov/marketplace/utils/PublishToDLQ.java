@@ -1,7 +1,7 @@
 package com.cyov.marketplace.utils;
 
 import com.cyov.marketplace.kafka.publisher.KafkaPublisherService;
-import com.cyov.marketplace.model.dto.CommunicationDTO;
+import com.cyov.marketplace.model.dto.communication.CommunicationDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
