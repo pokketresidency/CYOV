@@ -42,4 +42,15 @@ public class CartController {
                     .body(new ServiceResponse<>(FAILED, "Error while fetching cart items", new CartResponseDTO()));
         }
     }
+
+    @PostMapping("/delete")
+    public ResponseEntity<ServiceResponse<CartResponseDTO>> deleteCartItems(@RequestBody CartRequestDTO cartRequestDTO) {
+        try {
+            CartResponseDTO result = cartService.deleteCartItems(cartRequestDTO);
+            return ResponseEntity.ok(new ServiceResponse<>(SUCCESS, "Successfully deleted cart items", result));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ServiceResponse<>(FAILED, "Error while deleting", new CartResponseDTO()));
+        }
+    }
 }
