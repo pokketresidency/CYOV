@@ -13,5 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartResponseDTO implements Serializable {
-    private List<CartItem> cartItems;
+    private List<CartItemDTO> cartItems;
 }

@@ -12,6 +12,7 @@ import com.cyov.marketplace.repository.product.ProductRepository;
 import com.cyov.marketplace.repository.user.UserRepository;
 import com.cyov.marketplace.service.cart.CartService;
 import com.cyov.marketplace.service.cart.RedisCartService;
+import com.cyov.marketplace.utils.CustomMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -35,12 +37,27 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CustomMapper customMapper;
+
     @Override
     public FetchFromCartObject addItemsToCart(CartRequestDTO addToCartObject) throws JsonProcessingException {
         User user = userRepository.findById(addToCartObject.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
 
         FetchFromCartObject cartPresentInRedis = redisCartService.fetchCartFromRedis(addToCartObject.getUserId());
-        List<CartItem> existingCartItems = cartPresentInRedis.getCartItems();
+//        List<CartItemDTO> existingCartItems = cartPresentInRedis.getCartItems().stream().toList();
+
+        List<CartItem> existingCartItems = customMapper.mapDTOsToCartItems(cartPresentInRedis.getCartItems());
+//                cartPresentInRedis.getCartItems().stream()
+//                .map(cartItem -> new CartItem(
+//                        cartItem.getCartItemId(),
+//                        new Product(cartItem.getProductId()),
+//                        cartItem.getQuantity(),
+//                        cartItem.getPrice(),
+//                        cartItem.getAddedAt(),
+//                        new User(addToCartObject.getUserId())
+//                ))
+//                .collect(Collectors.toList());
 
         // Process new items
         for (CartItemDTO itemDTO : addToCartObject.getCartItemDTOList()) {
@@ -64,10 +81,20 @@ public class CartServiceImpl implements CartService {
                 existingCartItems.add(newItem);
             }
         }
-        redisCartService.addItemsToRedisCart(new AddToCartObject(addToCartObject.getUserId(), existingCartItems));
+        List<CartItemDTO> existingCartItemsDTO = customMapper.mapCartItemsToDTO(existingCartItems);
+//                existingCartItems.stream()
+//                .map(cartItem -> new CartItemDTO(
+//                        cartItem.getId(),
+//                        cartItem.getProduct().getProductId(),
+//                        cartItem.getQuantity(),
+//                        cartItem.getPrice(),
+//                        cartItem.getAddedAt()
+//                ))
+//                .collect(Collectors.toList());
+        redisCartService.addItemsToRedisCart(new AddToCartObject(addToCartObject.getUserId(), existingCartItemsDTO));
         List<CartItem> updatedCartItems = cartItemRepository.saveAll(existingCartItems);
 
-        return new FetchFromCartObject(updatedCartItems);
+        return new FetchFromCartObject(existingCartItemsDTO);
     }
 
     @Override

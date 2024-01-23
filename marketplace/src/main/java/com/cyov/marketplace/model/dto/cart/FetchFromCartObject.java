@@ -12,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FetchFromCartObject {
-    private List<CartItem> cartItems;
+    private List<CartItemDTO> cartItems;
 }
