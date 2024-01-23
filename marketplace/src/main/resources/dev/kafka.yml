@@ -8,7 +8,7 @@ spring:
     communication-partitioned-topic:  ${KAFKA_COMMUNICATION_PARTITIONED_TOPIC}
     communication-partitioned-group-id:  ${KAFKA_COMMUNICATION_PARTITIONED_GROUP_ID}
     communication-dlq-group-id:  ${KAFKA_COMMUNICATION_DLQ_GROUP_ID}
-    no-of-partitions: 10
+    no-of-partitions: 2
     retry:
       backoff:
         interval: 500
