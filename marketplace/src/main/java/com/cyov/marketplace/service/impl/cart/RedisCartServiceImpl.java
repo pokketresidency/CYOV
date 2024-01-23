@@ -45,7 +45,7 @@ public class RedisCartServiceImpl implements RedisCartService {
     public CartResponseDTO fetchCartFromRedis(Long userId) throws JsonProcessingException {
         String key = REDIS_CART_KEY_PREFIX + userId;
         CartResponseDTO redisUtilityValue = redisUtility.getValue(key, CartResponseDTO.class);
-        if(!Utils.hasValue(redisUtilityValue) || !Utils.hasValue(redisUtilityValue.getCartItems())) {
+        if(Utils.hasValue(redisUtilityValue) || !Utils.hasValue(redisUtilityValue.getCartItems())) {
             List<CartItem> existingCartItems = cartItemRepository.findByUser(new User(userId));
             List<CartItemDTO> existingCartItemsDTO = customMapper.mapCartItemsToDTO(existingCartItems);
 
