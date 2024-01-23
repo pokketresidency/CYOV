@@ -76,9 +76,13 @@ public class CartServiceImpl implements CartService {
         return new CartResponseDTO(existingCartItemsDTO);
     }
 
+    public CartResponseDTO deleteCartItems(CartRequestDTO cartRequestDTO) {
+        return new CartResponseDTO();
+    }
+
     @Override
-    public CartResponseDTO fetchFromCartObject(CartRequestDTO cartRequestDTO) throws JsonProcessingException {
-        return redisCartService.fetchCartFromRedis(cartRequestDTO.getUserId());
+    public CartResponseDTO fetchFromCartObject(Long userId) throws JsonProcessingException {
+        return redisCartService.fetchCartFromRedis(userId);
     }
 
 }
