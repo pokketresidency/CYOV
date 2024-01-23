@@ -76,8 +76,34 @@ public class CartServiceImpl implements CartService {
         return new CartResponseDTO(existingCartItemsDTO);
     }
 
-    public CartResponseDTO deleteCartItems(CartRequestDTO cartRequestDTO) {
-        return new CartResponseDTO();
+    @Override
+    public CartResponseDTO deleteCartItems(CartRequestDTO deleteFromCartRequestDTO) throws JsonProcessingException {
+        User user = userRepository.findById(deleteFromCartRequestDTO.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+
+        CartResponseDTO cartPresentInRedis = redisCartService.fetchCartFromRedis(deleteFromCartRequestDTO.getUserId());
+//        List<CartItemDTO> existingCartItems = cartPresentInRedis.getCartItems().stream().toList();
+
+        List<CartItem> existingCartItems = customMapper.mapDTOsToCartItems(cartPresentInRedis.getCartItems());
+
+        // Process new items
+        for (CartItemDTO itemDTO : deleteFromCartRequestDTO.getCartItems()) {
+            Product product = productRepository.findById(itemDTO.getProductId()).orElseThrow(() -> new RuntimeException("Product not found"));
+            Optional<CartItem> existingItem = existingCartItems.stream()
+                    .filter(cartItem -> cartItem.getProduct().getProductId().equals(product.getProductId()))
+                    .findFirst();
+
+            if (existingItem.isPresent()) {
+                // Update quantity if item already exists in cart
+                CartItem cartItem = existingItem.get();
+                Integer updatedQuatitiy = cartItem.getQuantity() - itemDTO.getQuantity() > 0 ? cartItem.getQuantity() - itemDTO.getQuantity() : 0;
+                cartItem.setQuantity(updatedQuatitiy);
+            }
+        }
+        List<CartItemDTO> existingCartItemsDTO = customMapper.mapCartItemsToDTO(existingCartItems);
+        redisCartService.addItemsToRedisCart(new CartRequestDTO(deleteFromCartRequestDTO.getUserId(), existingCartItemsDTO));
+        List<CartItem> updatedCartItems = cartItemRepository.saveAll(existingCartItems);
+
+        return new CartResponseDTO(existingCartItemsDTO);
     }
 
     @Override

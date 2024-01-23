@@ -10,5 +10,7 @@ public interface CartService {
 
     CartResponseDTO addItemsToCart(CartRequestDTO addToCartObject) throws JsonProcessingException;
 
+    CartResponseDTO deleteCartItems(CartRequestDTO deleteFromCartRequestDTO) throws JsonProcessingException;
+
     CartResponseDTO fetchFromCartObject(Long userId) throws JsonProcessingException;
 }
