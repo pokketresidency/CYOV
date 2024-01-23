@@ -1,9 +1,8 @@
 package com.cyov.marketplace.service.impl.cart;
 
-import com.cyov.marketplace.model.dto.cart.AddToCartObject;
-import com.cyov.marketplace.model.dto.cart.CartItemDTO;
 import com.cyov.marketplace.model.dto.cart.CartRequestDTO;
-import com.cyov.marketplace.model.dto.cart.FetchFromCartObject;
+import com.cyov.marketplace.model.dto.cart.CartItemDTO;
+import com.cyov.marketplace.model.dto.cart.CartResponseDTO;
 import com.cyov.marketplace.model.entity.orderflow.CartItem;
 import com.cyov.marketplace.model.entity.product.Product;
 import com.cyov.marketplace.model.entity.user.User;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -41,26 +39,16 @@ public class CartServiceImpl implements CartService {
     private CustomMapper customMapper;
 
     @Override
-    public FetchFromCartObject addItemsToCart(CartRequestDTO addToCartObject) throws JsonProcessingException {
+    public CartResponseDTO addItemsToCart(CartRequestDTO addToCartObject) throws JsonProcessingException {
         User user = userRepository.findById(addToCartObject.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
 
-        FetchFromCartObject cartPresentInRedis = redisCartService.fetchCartFromRedis(addToCartObject.getUserId());
+        CartResponseDTO cartPresentInRedis = redisCartService.fetchCartFromRedis(addToCartObject.getUserId());
 //        List<CartItemDTO> existingCartItems = cartPresentInRedis.getCartItems().stream().toList();
 
         List<CartItem> existingCartItems = customMapper.mapDTOsToCartItems(cartPresentInRedis.getCartItems());
-//                cartPresentInRedis.getCartItems().stream()
-//                .map(cartItem -> new CartItem(
-//                        cartItem.getCartItemId(),
-//                        new Product(cartItem.getProductId()),
-//                        cartItem.getQuantity(),
-//                        cartItem.getPrice(),
-//                        cartItem.getAddedAt(),
-//                        new User(addToCartObject.getUserId())
-//                ))
-//                .collect(Collectors.toList());
 
         // Process new items
-        for (CartItemDTO itemDTO : addToCartObject.getCartItemDTOList()) {
+        for (CartItemDTO itemDTO : addToCartObject.getCartItems()) {
             Product product = productRepository.findById(itemDTO.getProductId()).orElseThrow(() -> new RuntimeException("Product not found"));
             Optional<CartItem> existingItem = existingCartItems.stream()
                     .filter(cartItem -> cartItem.getProduct().getProductId().equals(product.getProductId()))
@@ -82,24 +70,15 @@ public class CartServiceImpl implements CartService {
             }
         }
         List<CartItemDTO> existingCartItemsDTO = customMapper.mapCartItemsToDTO(existingCartItems);
-//                existingCartItems.stream()
-//                .map(cartItem -> new CartItemDTO(
-//                        cartItem.getId(),
-//                        cartItem.getProduct().getProductId(),
-//                        cartItem.getQuantity(),
-//                        cartItem.getPrice(),
-//                        cartItem.getAddedAt()
-//                ))
-//                .collect(Collectors.toList());
-        redisCartService.addItemsToRedisCart(new AddToCartObject(addToCartObject.getUserId(), existingCartItemsDTO));
+        redisCartService.addItemsToRedisCart(new CartRequestDTO(addToCartObject.getUserId(), existingCartItemsDTO));
         List<CartItem> updatedCartItems = cartItemRepository.saveAll(existingCartItems);
 
-        return new FetchFromCartObject(existingCartItemsDTO);
+        return new CartResponseDTO(existingCartItemsDTO);
     }
 
     @Override
-    public FetchFromCartObject fetchFromCartObject(AddToCartObject addToCartObject) throws JsonProcessingException {
-        return redisCartService.fetchCartFromRedis(addToCartObject.getUserId());
+    public CartResponseDTO fetchFromCartObject(CartRequestDTO cartRequestDTO) throws JsonProcessingException {
+        return redisCartService.fetchCartFromRedis(cartRequestDTO.getUserId());
     }
 
 }
