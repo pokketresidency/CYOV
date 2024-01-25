@@ -2,6 +2,7 @@ package com.cyov.marketplace.model.entity.orderflow;
 
 
 
+import com.cyov.marketplace.model.entity.product.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,6 +39,9 @@ public class Coupon {
 
     @Column(name = "valid_until", nullable = false)
     private LocalDate validUntil;
+
+    @Column(name = "product_id", nullable = true)
+    private Product product;
 
     @Column(nullable = false)
     private Boolean isActive;
