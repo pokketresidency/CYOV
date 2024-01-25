@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public class CustomMapper {
     public List<CartItemDTO> mapCartItemsToDTO(List<CartItem> cartItems) {
         List<CartItemDTO> cartItemsDTO = cartItems.stream()
+                .filter(cartItem -> cartItem.isActive())
                 .map(cartItem -> new CartItemDTO(
                         cartItem.getUser().getUserId(),
                         cartItem.getId(),
@@ -34,7 +35,9 @@ public class CustomMapper {
                         cartItem.getQuantity(),
                         cartItem.getPrice(),
                         cartItem.getAddedAt(),
-                        new User(cartItem.getUserId())
+                        new User(cartItem.getUserId()),
+                        true
+
                 ))
                 .collect(Collectors.toList());
 
