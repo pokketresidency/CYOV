@@ -40,7 +40,8 @@ public class Coupon {
     @Column(name = "valid_until", nullable = false)
     private LocalDate validUntil;
 
-    @Column(name = "product_id", nullable = true)
+    @ManyToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "productId")
     private Product product;
 
     @Column(nullable = false)
